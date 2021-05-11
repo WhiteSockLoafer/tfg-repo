@@ -3,3 +3,7 @@
 
 # PYTHON
 venv
+
+# W2V
+corpus
+word2vec.model
