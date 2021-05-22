@@ -17,31 +17,36 @@ def preprocessing(file: str):
         return
 
     content = f.read()
+    # Eliminar comas
     content = re.sub(r'\,', '', content)
+    # Sustituir caracteres que no sean del alfabeto o espacios por saltos de linea
     content = re.sub(r'[^a-zA-ZÀ-ÿ\u00f1\u00d1\n ]', '\n', content)
+    # ELiminar uno o más espacios a principio o final de linea
     content = re.sub(r'^ +| +$', '', content, flags=re.MULTILINE)
+    # Sustituir dos o más saltos de línea seguidos por uno solo
     content = re.sub(r'\n{2,}', '\n', content)
-    content = content.split('\n')
+    texts = content.split('\n')
 
-    phrases: list[str] = []
-    for line in content:
-        if len(line.split()) > 2:
-            phrases.append(line.lower().split())
+    stoplist = set(
+        'el la los las se a o por para sin como su que al en de y del con un una sobre sus lo no cuando'.split())
 
-    return phrases
+    sentences = [[word for word in sentence.lower().split() if word not in stoplist]
+                 for sentence in texts if len(sentence.split()) > 2]
+
+    return sentences
 
 
 control = time.time()
 print('Preprocessing your corpus...')
 
-phrases = preprocessing('corpus/constitucion')
+sentences = preprocessing('corpus/constitucion')
 print(f'Time taken : {(time.time() - control) / 60:.2f} mins\n')
 
 control = time.time()
 print('Preparing your model...')
 
-model = Word2Vec(sentences=phrases, vector_size=100,
+model = Word2Vec(sentences=sentences, vector_size=300,
                  window=5, min_count=1, workers=4)
 print(f'Time taken : {(time.time() - control) / 60:.2f} mins\n')
 
-print(model.wv.most_similar('españa'))
+print(model.wv.most_similar(positive=['derechos']))
