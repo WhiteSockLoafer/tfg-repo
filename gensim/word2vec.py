@@ -22,20 +22,22 @@ def preprocess(line: str):
     # ELiminar caracteres que no sean del alfabeto o espacios
     line = re.sub(r'[^a-zA-ZÀ-ÿ\u00f1\u00d1 ]', '', line)
 
-    stoplist = stopwords.words('spanish') + 'así cada demás mediante ningún si tal'.split()
+    stoplist = stopwords.words('spanish') + 'así cada demás mediante ningún tal'.split()
 
-    return [token for token in line.lower().split() if token not in stoplist and len(token) > 1]
+    return [token for token in line.lower().split() if token not in stoplist and len(token) > 2]
 
 
 
-corpus = DirectoryReader(dirname="corpus")
+corpus = DirectoryReader(dirname='corpus')
 
-control = time.time()
 print('Preparing your model...')
+control = time.time()
 
 model = Word2Vec(sentences=corpus, vector_size=300,
                  window=5, min_count=1, workers=4)
-model.wv.save("word2vec.wordvectors")
 print(f'Time taken : {(time.time() - control) / 60:.2f} mins\n')
+
+model.save('model/word2vec.model')
+model.wv.save('model/word2vec.wordvectors')
 
 print(model.wv.most_similar(positive=['gobierno']))
