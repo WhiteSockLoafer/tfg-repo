@@ -11,7 +11,7 @@
 from gensim.models import KeyedVectors
 
 # Load gensim word2vec
-w2v_path = 'modelo/word2vec.wordvectors'
+w2v_path = 'modelo/boe.wordvectors'
 w2v = KeyedVectors.load(w2v_path)
 
 import io

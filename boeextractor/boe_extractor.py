@@ -1,8 +1,12 @@
 import scrapy
 import re
 from scrapy.crawler import CrawlerProcess
-from scrapy.utils.log import configure_logging
 
+ADITTIONAL_DOCS = [
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444', # CODIGO PENAL
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229', # CONSTITUCIÓN
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1889-4763' # CÓDIGO CIVIL
+]
 
 class BoeSpider(scrapy.Spider):
     name = "articulos"
@@ -13,14 +17,17 @@ class BoeSpider(scrapy.Spider):
 
     def parseSearch(self, response):
         for result in response.css("a.resultado-busqueda-link-defecto::attr(href)").getall():
+            if '=BOE-' in result or '=DOUE-' in result:
+                yield response.follow(result, callback=self.parseArticle)
+        for result in ADITTIONAL_DOCS:
             yield response.follow(result, callback=self.parseArticle)
 
     def parseArticle(self, response):
         filename = re.search(r'.*id=(.*)', response.url).group(1)
         with open('corpus/' + filename, 'wb') as f:
             for parrafo in response.xpath('//p[@class="parrafo"]/text()').getall():
-                parrafo = re.sub(r'\. |\.$', '\n', parrafo)
-                f.write(bytes(parrafo, 'utf-8'))
+                parrafo = re.sub(r'\.', '\n', parrafo)
+                f.write(bytes(parrafo + '\n', 'utf-8'))
         print(f'Saved file {filename}')
 
 
