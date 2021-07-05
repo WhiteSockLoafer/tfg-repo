@@ -38,7 +38,7 @@ control = time.time()
 
 
 model = Word2Vec(sentences=corpus, vector_size=300,
-                 window=5, min_count=10, workers=4)
+                 window=5, min_count=10, workers=8)
 print(f'Time taken : {(time.time() - control) / 60:.2f} mins\n')
 
 model.save('modelo/boe.model')

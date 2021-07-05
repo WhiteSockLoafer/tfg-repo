@@ -1,3 +1,5 @@
+from os import name
+import sys
 import scrapy
 import re
 from scrapy.crawler import CrawlerProcess
@@ -9,6 +11,8 @@ ADITTIONAL_DOCS = [
 ]
 
 class BoeSpider(scrapy.Spider):
+
+    name = "articulos"
 
     def __init__(self, pages):
         super().__init__()
@@ -44,8 +48,10 @@ class BoeSpider(scrapy.Spider):
         print(f'Saved file {filename}')
 
 
-crawler = CrawlerProcess(settings={
-    'LOG_LEVEL': 'ERROR'
-})
-crawler.crawl(BoeSpider, pages=2)
-crawler.start()
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        crawler = CrawlerProcess(settings={
+            'LOG_LEVEL': 'ERROR'
+        })
+        crawler.crawl(BoeSpider, pages=sys.argv[1])
+        crawler.start()
