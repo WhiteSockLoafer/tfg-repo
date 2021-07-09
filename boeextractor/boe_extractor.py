@@ -14,9 +14,10 @@ class BoeSpider(scrapy.Spider):
 
     name = "articulos"
 
-    def __init__(self, pages):
+    def __init__(self, pages, corpus_dir):
         super().__init__()
         self.pages = pages
+        self.corpus_dir = corpus_dir
 
 
     def start_requests(self):
@@ -41,7 +42,7 @@ class BoeSpider(scrapy.Spider):
         
     def parseArticle(self, response):
         filename = re.search(r'.*id=(.*)', response.url).group(1)
-        with open('corpus/' + filename, 'wb') as f:
+        with open(self.corpus_dir + '/' + filename, 'wb') as f:
             for parrafo in response.xpath('//p[@class="parrafo"]/text()').getall():
                 parrafo = re.sub(r'\.', '\n', parrafo)
                 f.write(bytes(parrafo + '\n', 'utf-8'))
@@ -49,9 +50,9 @@ class BoeSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         crawler = CrawlerProcess(settings={
             'LOG_LEVEL': 'ERROR'
         })
-        crawler.crawl(BoeSpider, pages=sys.argv[1])
+        crawler.crawl(BoeSpider, pages=int(sys.argv[1]), corpus_dir=sys.argv[2])
         crawler.start()
