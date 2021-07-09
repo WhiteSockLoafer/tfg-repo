@@ -1,4 +1,5 @@
 import sys
+import json
 from lib import DirectoryCorpusReader, AnalogiesDatasetReader
 import time
 from gensim.models import Word2Vec, FastText
@@ -37,5 +38,13 @@ if __name__ == '__main__':
                 print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')
                 model.save(models_dir + '/word2vec_' + str((i+j)*2+1) + '.model')
                 print('Model word2vec_' + str((i+j)*2+1) + ' saved\n')
-
+        
+        print('Evaluating the models...')
+        partial_time = time.time()
+        results = dataset.evaluate(models_dir=models_dir)
+        with open('results.json', 'w') as f:
+            json.dump(results, f)
+        print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')
+        print('Results report saved in results.json\n')
+        
         print(f'Total time taken : {(time.time() - init_time) / 60:.2f} mins\n')
