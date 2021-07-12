@@ -1,6 +1,8 @@
 import os
 import re
 import statistics
+import numpy as np
+import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 from gensim.models import Word2Vec, FastText
 
@@ -50,12 +52,14 @@ class AnalogiesDatasetReader(object):
 
                 for analogy in self.analogies():
                     try:
-                        similars = model.wv.most_similar(negative=[analogy[0]], positive=[analogy[1], analogy[2]])
+                        similars = model.wv.most_similar(
+                            negative=[analogy[0]], positive=[analogy[1], analogy[2]])
                     except KeyError:
                         positions.append(-1)
                         marks.append(0)
                     else:
-                        similar = next(((index, tuple) for (index, tuple) in enumerate(similars) if tuple[0] == analogy[3]), None)
+                        similar = next(((index, tuple) for (index, tuple) in enumerate(
+                            similars) if tuple[0] == analogy[3]), None)
                         if similar is None:
                             positions.append(-1)
                             marks.append(0)
@@ -75,3 +79,13 @@ class AnalogiesDatasetReader(object):
                 )
 
         return results
+
+
+def makeplots(report: dict):
+    x = np.arange(0,len(report),1)
+    y = [model["accuracy"] for model in report]
+
+    plt.plot(x,y)
+    plt.xlabel("Model")
+    plt.ylabel("Accuracy")
+    return plt

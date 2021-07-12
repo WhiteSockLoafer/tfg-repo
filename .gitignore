@@ -3,7 +3,9 @@
 
 # PYTHON
 venv
+*/__pycache__
 
 # Otros
 corpus
 models
+model_trainer/out
