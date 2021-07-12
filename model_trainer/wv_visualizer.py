@@ -1,14 +1,3 @@
-"""
-@author: BrikerMan
-@contact: eliyar917@gmail.com
-@blog: https://eliyar.biz
-@version: 1.0
-@license: Apache Licence
-@file: w2v_visualizer.py
-@time: 2017/7/30 上午9:37
-"""
-
-
 if __name__ == '__main__':
 
     import sys

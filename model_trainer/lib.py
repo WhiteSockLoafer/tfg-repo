@@ -21,18 +21,10 @@ class DirectoryCorpusReader(object):
                 if len(line) > 2:  # Solo líneas mayores de 2 palabras
                     yield line
 
-    ''' Preprocesamiento personalizado '''
-
     def preprocess(self, line: str):
-
         # Eliminar caracteres que no sean del alfabeto castellano o espacios
         line = re.sub(r'[^a-zA-ZÀ-ÿ\u00f1\u00d1 ]', '', line)
-
-        # Palabras ruidosas para nuestro modelo
-        stoplist = stopwords.words(
-            'spanish') + 'así cada demás mediante ningún tal ello puede ser pueda'.split()
-
-        return [token for token in line.lower().split() if token not in stoplist and len(token) > 2]
+        return [token for token in line.lower().split() if len(token) > 2]
 
 
 class AnalogiesDatasetReader(object):
@@ -61,12 +53,12 @@ class AnalogiesDatasetReader(object):
                         similars = model.wv.most_similar(negative=[analogy[0]], positive=[analogy[1], analogy[2]])
                     except KeyError:
                         positions.append(-1)
-                        marks.append(-1)
+                        marks.append(0)
                     else:
                         similar = next(((index, tuple) for (index, tuple) in enumerate(similars) if tuple[0] == analogy[3]), None)
                         if similar is None:
                             positions.append(-1)
-                            marks.append(-1)
+                            marks.append(0)
                         else:
                             positions.append(similar[0])
                             marks.append(similar[1][1])
@@ -74,6 +66,8 @@ class AnalogiesDatasetReader(object):
                 results.append(
                     {
                         "model": file_name,
+                        "window": model.window,
+                        "vector_size": model.vector_size,
                         "positions": positions,
                         "marks": marks,
                         "accuracy": statistics.mean(marks)

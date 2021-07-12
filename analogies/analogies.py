@@ -1,14 +1,14 @@
 from gensim.models import Word2Vec
 
 
-model = Word2Vec.load('models/word2vec_1.model')
+model = Word2Vec.load('models/fasttext_1.model')
 
 print('hombre es a hombres lo que mujer es a ...')
 print(model.wv.most_similar(negative=['hombre'], positive=['hombres', 'mujer'])) # MUJERES - PRURALIDAD
 print('\n')
 
 print('padre es a madre lo que hijo es a ...')
-print(model.wv.most_similar(negative=['padre'], positive=['madre', 'hijo'])) # HIJA - GENEROS
+print(model.wv.most_similar(negative=['padre'], positive=['madre', 'hijo'])) # MADRE - GENEROS
 print('\n')
 
 print('mancomunado es a solidario lo que dolo es a ...')
