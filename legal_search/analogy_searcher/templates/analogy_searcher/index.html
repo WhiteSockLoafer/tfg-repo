@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Legal Searcher</title>
+</head>
+
+<body>
+	<form action="{% url 'predict' %}" method="post">
+		{% csrf_token %}
+			<p style="text-align: center;"><em>LEGAL SEARCHER</em></p>
+
+			<p style="text-align: center;">
+				<input name="n1" size="15" type="text" /> ->
+				<input name="p1" size="15" type="text" />
+			</p>
+
+			<p style="text-align: center;">
+				<input name="p2" size="15" type="text" /> -> ???
+			</p>
+		<p style="text-align: center;"><input type="submit" value="PREDICT"></p>
+	</form>
+	{% if result_list %}
+	<p style="text-align: center;">{% for result in result_list %} {{result}} {% endfor %}</p>
+	{% endif %}
+</body>
+
+</html>
