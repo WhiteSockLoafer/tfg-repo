@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<p style="text-align: center; font-size:300%"><em>LEGAL SEARCHER</em></p>
+	<form class="row g-4 w-50 mx-auto" style="padding-top: 2%" method="post" action="">
+		{% csrf_token %}
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="n1" value="hombre" required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="p1" value="hombres" required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="p2" value="mujer" required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" value="???" readonly>
+		</div>
+		<div class="col-12" style="text-align: center;">
+			<button type="submit" class="btn btn-primary">Predict</button>
+		</div>
+	</form>
+{% endblock %}

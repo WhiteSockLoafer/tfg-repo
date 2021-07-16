@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<p style="text-align: center; font-size:300%"><em>LEGAL SEARCHER</em></p>
+	<form class="row g-4 w-50 mx-auto" style="padding-top: 2%" method="post" action="">
+		{% csrf_token %}
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="n1" value={{n1}} required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="p1" value={{p1}} required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" name="p2" value={{p2}} required>
+		</div>
+		<div class="col-6">
+			<input style="text-align: center;" type="text" class="form-control" value="???" readonly>
+		</div>
+		<div class="col-12" style="text-align: center;">
+			<button type="submit" class="btn btn-primary">Predict</button>
+		</div>
+	</form>
+	{% if result_list %}
+	<div class="row g-4" style="padding-top: 5%;">
+		{% for result in result_list %}
+		<div class="col-3 mx-auto">
+			<ul class="list-group list-group-horizontal">
+				<li class="list-group-item">{{result.0}}</li>
+				<li class="list-group-item">{{result.1}}%</li>
+			</ul>
+		</div>
+		{% endfor %}
+	</div>
+	{% endif %}
+{% endblock %}
