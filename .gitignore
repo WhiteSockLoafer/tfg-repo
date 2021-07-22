@@ -3,9 +3,9 @@
 
 # PYTHON
 venv
-*/__pycache__
+**/__pycache__
 
 # Otros
-trainer/corpus
-trainer/model_trainer/out
+trainer/corpus/
+trainer/model_trainer/out/
 legal_search/.env
