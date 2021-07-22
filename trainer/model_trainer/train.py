@@ -15,9 +15,9 @@ if __name__ == '__main__':
         models_dir = './out/models'
         os.makedirs('./out')
         os.makedirs(models_dir)
-        
+
         vector_sizes = [200, 500]
-        windows = [1,4]
+        windows = [1, 4]
 
         init_time = time.time()
 
@@ -45,15 +45,15 @@ if __name__ == '__main__':
                 print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')
                 model.save(models_dir + '/word2vec_' + str(i) + '.model')
                 print('Model word2vec_' + str(i) + ' saved\n')
-        
+
         print('Evaluating the models...')
         partial_time = time.time()
-        results = dataset.evaluate(models_dir=models_dir)
+        results = dataset.evaluate(models_dir=models_dir, topn=8)
         plot = makeplots(results)
         plot.savefig("out/figure.png")
         with open('out/results.json', 'w') as f:
             json.dump(results, f)
         print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')
         print('Results report saved in ./out\n')
-        
+
         print(f'Total time taken : {(time.time() - init_time) / 60:.2f} mins\n')

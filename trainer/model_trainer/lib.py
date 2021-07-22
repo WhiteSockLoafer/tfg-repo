@@ -38,36 +38,31 @@ class AnalogiesDatasetReader(object):
         for line in open(self.dataset_path, encoding='utf-8'):
             yield line.split()
 
-    def evaluate(self, models_dir: str) -> dict:
+    def evaluate(self, models_dir: str, topn: int) -> dict:
         results = []
         i = 0
         for file_name in os.listdir(models_dir):
-            if ".npy" not in file_name:
+            if '.npy' not in file_name:
                 i += 1
                 if 'fasttext' in file_name:
                     model = FastText.load(os.path.join(models_dir, file_name))
                 else:
                     model = Word2Vec.load(os.path.join(models_dir, file_name))
 
-                positions = []
                 marks = []
 
                 for analogy in self.analogies():
                     try:
                         similars = model.wv.most_similar(
-                            negative=[analogy[0]], positive=[analogy[1], analogy[2]])
+                            negative=[analogy[0]], positive=[analogy[1], analogy[2]], topn=topn)
                     except KeyError:
-                        positions.append(-1)
-                        marks.append(0)
+                        marks.append(topn)
                     else:
-                        similar = next(((index, tuple) for (index, tuple) in enumerate(
-                            similars) if tuple[0] == analogy[3]), None)
+                        similar = next(((index, tuple) for (index, tuple) in enumerate(similars) if tuple[0] == analogy[3]), None)
                         if similar is None:
-                            positions.append(-1)
-                            marks.append(0)
+                            marks.append(topn)
                         else:
-                            positions.append(similar[0])
-                            marks.append(similar[1][1])
+                            marks.append(similar[0])
 
                 results.append(
                     {
@@ -75,9 +70,8 @@ class AnalogiesDatasetReader(object):
                         "model_name": file_name,
                         "window": model.window,
                         "vector_size": model.vector_size,
-                        "positions": positions,
                         "marks": marks,
-                        "accuracy": statistics.mean(marks)
+                        "accuracy": 100 - (100/len(marks) * sum(marks)/topn)
                     }
                 )
 
