@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
         corpus = DirectoryCorpusReader(dir_path=sys.argv[1])
         dataset = AnalogiesDatasetReader(dataset_path=sys.argv[2])
+
         models_dir = './out/models'
         os.makedirs('./out')
         os.makedirs(models_dir)
@@ -48,12 +49,15 @@ if __name__ == '__main__':
 
         print('Evaluating the models...')
         partial_time = time.time()
-        results = dataset.evaluate(models_dir=models_dir, topn=8)
+        results, bads = dataset.evaluate(models_dir=models_dir, topn=10)
         plot = makeplots(results)
         plot.savefig("out/figure.png")
         with open('out/results.json', 'w') as f:
             json.dump(results, f)
         print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')
         print('Results report saved in ./out\n')
-
+        if bads:
+            print('None of the models passed the analogies: ')
+            print(bads)
+        
         print(f'Total time taken : {(time.time() - init_time) / 60:.2f} mins\n')

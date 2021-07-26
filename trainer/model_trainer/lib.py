@@ -37,13 +37,19 @@ class AnalogiesDatasetReader(object):
     def analogies(self):
         for line in open(self.dataset_path, encoding='utf-8'):
             yield line.split()
+    
+    def __len__(self) -> int:
+        with open(self.dataset_path) as f:
+            len = sum(1 for line in f)
+        return len
 
     def evaluate(self, models_dir: str, topn: int) -> dict:
         results = []
-        i = 0
+        bad = [0 for i in range(len(self))]
+        model_index = 0
         for file_name in os.listdir(models_dir):
-            if '.npy' not in file_name:
-                i += 1
+            if file_name.endswith('.model'):
+                model_index += 1
                 if 'fasttext' in file_name:
                     model = FastText.load(os.path.join(models_dir, file_name))
                 else:
@@ -51,31 +57,33 @@ class AnalogiesDatasetReader(object):
 
                 marks = []
 
-                for analogy in self.analogies():
+                for i, analogy in enumerate(self.analogies()):
                     try:
                         similars = model.wv.most_similar(
                             negative=[analogy[0]], positive=[analogy[1], analogy[2]], topn=topn)
                     except KeyError:
                         marks.append(topn)
+                        bad[i] += 1
                     else:
                         similar = next(((index, tuple) for (index, tuple) in enumerate(similars) if tuple[0] == analogy[3]), None)
                         if similar is None:
                             marks.append(topn)
+                            bad[i] += 1
                         else:
                             marks.append(similar[0])
 
                 results.append(
                     {
-                        "id": i,
+                        "id": model_index,
                         "model_name": file_name,
                         "window": model.window,
                         "vector_size": model.vector_size,
                         "marks": marks,
-                        "accuracy": 100 - (100/len(marks) * sum(marks)/topn)
+                        "accuracy": 100 - (100/len(self) * sum(marks)/topn)
                     }
                 )
-
-        return results
+        bads = [index for index, errors in enumerate(bad) if errors == model_index]
+        return results, bads
 
 
 def makeplots(report: dict):
