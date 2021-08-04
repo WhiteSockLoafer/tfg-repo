@@ -82,7 +82,7 @@ class AnalogiesDatasetReader(object):
                         "accuracy": 100 - (100/len(self) * sum(marks)/topn)
                     }
                 )
-        bads = [index for index, errors in enumerate(bad) if errors == model_index]
+        bads = [index + 1 for index, errors in enumerate(bad) if errors == model_index]
         return results, bads
 
 

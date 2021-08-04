@@ -51,7 +51,7 @@ if __name__ == '__main__':
         partial_time = time.time()
         results, bads = dataset.evaluate(models_dir=models_dir, topn=10)
         plot = makeplots(results)
-        plot.savefig("out/figure.png")
+        plot.savefig("out/results.png")
         with open('out/results.json', 'w') as f:
             json.dump(results, f)
         print(f'Time taken : {(time.time() - partial_time) / 60:.2f} mins')

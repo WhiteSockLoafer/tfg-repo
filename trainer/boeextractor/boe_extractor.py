@@ -5,9 +5,11 @@ import re
 from scrapy.crawler import CrawlerProcess
 
 ADITTIONAL_DOCS = [
-    'https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444', # CODIGO PENAL
-    'https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229', # CONSTITUCIÓN
-    'https://www.boe.es/buscar/act.php?id=BOE-A-1889-4763' # CÓDIGO CIVIL
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1889-4763',     # CÓDIGO CIVIL
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229',    # CONSTITUCIÓN
+    'https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444',    # CODIGO PENAL
+    'https://www.boe.es/buscar/act.php?id=BOE-A-2000-323',      # LEY ENJUICIAMIENTO CIVIL
+    'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430'     # ESTATUTO DE LOS TRABAJADORES
 ]
 
 class BoeSpider(scrapy.Spider):
@@ -32,7 +34,7 @@ class BoeSpider(scrapy.Spider):
         self.pages -= 1
         
         for result in response.css("a.resultado-busqueda-link-defecto::attr(href)").getall():
-            if '=BOE-' in result or '=DOUE-' in result:
+            if '=BOE-' in result:
                 yield response.follow(result, callback=self.parseArticle)
         
         if self.pages > 0:
@@ -43,7 +45,7 @@ class BoeSpider(scrapy.Spider):
     def parseArticle(self, response):
         filename = re.search(r'.*id=(.*)', response.url).group(1)
         with open(self.corpus_dir + '/' + filename, 'wb') as f:
-            for parrafo in response.xpath('//p[@class="parrafo"]/text()').getall():
+            for parrafo in response.xpath('//p[@class="parrafo"]/text()|//p[@class="parrafo_2"]/text()').getall():
                 parrafo = re.sub(r'\.', '\n', parrafo)
                 f.write(bytes(parrafo + '\n', 'utf-8'))
         print(f'Saved file {filename}')
