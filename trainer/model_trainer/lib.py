@@ -7,10 +7,6 @@ from nltk.corpus import stopwords
 from gensim.models import Word2Vec, FastText
 
 
-''' Lector de ficheros en texto plano de cierto directorio, 
-    memory-friendly y preprocesado con preprocess()'''
-
-
 class DirectoryCorpusReader(object):
 
     def __init__(self, dir_path):

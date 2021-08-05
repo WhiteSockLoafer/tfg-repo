@@ -17,8 +17,8 @@ if __name__ == '__main__':
         os.makedirs('./out')
         os.makedirs(models_dir)
 
-        vector_sizes = [200, 500]
-        windows = [1, 4]
+        vector_sizes = [200, 350, 500]
+        windows = [2, 5, 10]
 
         init_time = time.time()
 
