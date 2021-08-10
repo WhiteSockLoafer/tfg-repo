@@ -16,15 +16,15 @@ class BoeSpider(scrapy.Spider):
 
     name = "articulos"
 
-    def __init__(self, pages, corpus_dir):
+    def __init__(self, pages, corpus_dir, start_url):
         super().__init__()
         self.pages = pages
         self.corpus_dir = corpus_dir
+        self.start_url = start_url
 
 
     def start_requests(self):
-        start_url = 'https://www.boe.es/buscar/legislacion.php?accion=Mas&id_busqueda=_cGhXenk1dEdldTRsT0JSRFkzVjBNNGpJWlg3aFBkZ0V5cTRMWTRJMjZDdjI1aEZVOWV5dENxWWRpUzNlQ0phVXdlR0xwV0RVNCtyb1hWZnNBaithamVzZWp1cjBSN0xqbkhzOGZnVGs3enhBTDJ4SDBKTENoSXU2ckRZUkpGdGtEdHErN0RCWTRKcWNFMSt3cEJIbnp3ekVIMVhLZjliTnk1RzAvTHowNFdjPQ%2C%2C-0-2000&page_hits=2000&sort_field%5B0%5D=FPU&sort_order%5B0%5D=desc'
-        yield scrapy.Request(url=start_url, callback=self.parseSearch)
+        yield scrapy.Request(url=self.start_url, callback=self.parseSearch)
 
         for url in ADITTIONAL_DOCS:
             yield scrapy.Request(url, callback=self.parseArticle)
@@ -52,9 +52,9 @@ class BoeSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 4:
         crawler = CrawlerProcess(settings={
             'LOG_LEVEL': 'ERROR'
         })
-        crawler.crawl(BoeSpider, pages=int(sys.argv[1]), corpus_dir=sys.argv[2])
+        crawler.crawl(BoeSpider, pages=int(sys.argv[1]), corpus_dir=sys.argv[2], start_url=sys.argv[3])
         crawler.start()
