@@ -7,5 +7,5 @@ venv
 
 # Otros
 trainer/corpus/
-trainer/model_trainer/out/
+trainer/model_trainer/out/models
 legal_search/.env

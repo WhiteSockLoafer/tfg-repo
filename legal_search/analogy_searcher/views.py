@@ -4,7 +4,7 @@ from django.conf import settings
 from gensim.models import Word2Vec
 
 model = Word2Vec.load(os.path.join(
-    settings.BASE_DIR, 'analogy_searcher/w2v_model/word2vec_4.model'
+    settings.BASE_DIR, 'analogy_searcher/w2v_model/word2vec_14.model'
 ))
 
 
