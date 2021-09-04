@@ -1,9 +1,7 @@
 import os
 import re
-import statistics
-import numpy as np
 import matplotlib.pyplot as plt
-from nltk.corpus import stopwords
+import numpy as np
 from gensim.models import Word2Vec, FastText
 
 
@@ -87,6 +85,7 @@ def makeplots(report: dict):
     y = [model["accuracy"] for model in report]
 
     plt.plot(x, y, marker=".")
+    plt.xticks(np.arange(min(x), max(x)+1, 1.0))
     plt.xlabel("Model ID")
     plt.ylabel("Accuracy")
     return plt
