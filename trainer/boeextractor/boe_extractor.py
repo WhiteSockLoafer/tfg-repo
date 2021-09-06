@@ -1,4 +1,3 @@
-from os import name
 import sys
 import scrapy
 import re
